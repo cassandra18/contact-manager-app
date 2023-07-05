@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcrypt');
 const User = require('../model/userModel');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv').config();
 
 //@desc register user
 //@route POST /api/user/register
@@ -14,7 +15,7 @@ const registerUser = asyncHandler(async (req, res) =>
         res.status(400);
         throw new Error ("All fields are mandatory!");
     }
-    const userAvailable = await username.findOne({ email });
+    const userAvailable = await User.findOne({ email });
     if (userAvailable) {
         res.status(400);
         throw new Error ("User already exists!");
@@ -55,7 +56,7 @@ const loginUser =asyncHandler(async (req, res) =>
                 id: user.id,
                     },
             },
-            process.env.ACCESS_TOKEN_SECRET,
+            process.env.SECRET_ACCESS_TOKEN,
             { expiresIn: "15m"},
         );
         res.status(200).json({ accessToken });
